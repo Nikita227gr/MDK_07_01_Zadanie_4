@@ -1,0 +1,205 @@
+-- DROP SCHEMA public;
+
+CREATE SCHEMA public AUTHORIZATION pg_database_owner;
+
+COMMENT ON SCHEMA public IS 'standard public schema';
+
+-- DROP SEQUENCE korukin_227_doctors_id_seq;
+
+CREATE SEQUENCE korukin_227_doctors_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 32767
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE korukin_227_doctors_id_seq OWNER TO postgres;
+GRANT ALL ON SEQUENCE korukin_227_doctors_id_seq TO postgres;
+
+-- DROP SEQUENCE korukin_227_patient_id_seq;
+
+CREATE SEQUENCE korukin_227_patient_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE korukin_227_patient_id_seq OWNER TO postgres;
+GRANT ALL ON SEQUENCE korukin_227_patient_id_seq TO postgres;
+
+-- DROP SEQUENCE korukin_227_reception_id_seq;
+
+CREATE SEQUENCE korukin_227_reception_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 2147483647
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE korukin_227_reception_id_seq OWNER TO postgres;
+GRANT ALL ON SEQUENCE korukin_227_reception_id_seq TO postgres;
+
+-- DROP SEQUENCE korukin_227_specialty_id_seq;
+
+CREATE SEQUENCE korukin_227_specialty_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 32767
+	START 1
+	CACHE 1
+	NO CYCLE;
+
+-- Permissions
+
+ALTER SEQUENCE korukin_227_specialty_id_seq OWNER TO postgres;
+GRANT ALL ON SEQUENCE korukin_227_specialty_id_seq TO postgres;
+-- public.korukin_227_patient определение
+
+-- Drop table
+
+-- DROP TABLE korukin_227_patient;
+
+CREATE TABLE korukin_227_patient (
+	id serial4 NOT NULL,
+	first_name varchar NULL,
+	name_ varchar NULL,
+	last_name varchar NULL,
+	birthday date NULL,
+	address varchar NULL,
+	CONSTRAINT korukin_227_patient_pkey PRIMARY KEY (id)
+);
+
+-- Permissions
+
+ALTER TABLE korukin_227_patient OWNER TO postgres;
+GRANT ALL ON TABLE korukin_227_patient TO postgres;
+
+
+-- public.korukin_227_specialty определение
+
+-- Drop table
+
+-- DROP TABLE korukin_227_specialty;
+
+CREATE TABLE korukin_227_specialty (
+	id smallserial NOT NULL,
+	name_ varchar NULL,
+	CONSTRAINT korukin_227_specialty_pkey PRIMARY KEY (id)
+);
+
+-- Permissions
+
+ALTER TABLE korukin_227_specialty OWNER TO postgres;
+GRANT ALL ON TABLE korukin_227_specialty TO postgres;
+
+
+-- public.korukin_227_doctors определение
+
+-- Drop table
+
+-- DROP TABLE korukin_227_doctors;
+
+CREATE TABLE korukin_227_doctors (
+	id smallserial NOT NULL,
+	first_name varchar NULL,
+	name_ varchar NULL,
+	last_name varchar NULL,
+	percentage numeric(3, 2) NULL,
+	id_specialty int4 NOT NULL,
+	CONSTRAINT korukin_227_doctors_pkey PRIMARY KEY (id),
+	CONSTRAINT korukin_227_doctors_id_specialty_fkey FOREIGN KEY (id_specialty) REFERENCES korukin_227_specialty(id)
+);
+
+-- Permissions
+
+ALTER TABLE korukin_227_doctors OWNER TO postgres;
+GRANT ALL ON TABLE korukin_227_doctors TO postgres;
+
+
+-- public.korukin_227_reception определение
+
+-- Drop table
+
+-- DROP TABLE korukin_227_reception;
+
+CREATE TABLE korukin_227_reception (
+	id serial4 NOT NULL,
+	id_patient int4 NOT NULL,
+	id_doctors int4 NOT NULL,
+	price money NULL,
+	data_ date NULL,
+	CONSTRAINT korukin_227_reception_pkey PRIMARY KEY (id),
+	CONSTRAINT korukin_227_reception_id_doctors_fkey FOREIGN KEY (id_doctors) REFERENCES korukin_227_doctors(id),
+	CONSTRAINT korukin_227_reception_id_patient_fkey FOREIGN KEY (id_patient) REFERENCES korukin_227_patient(id)
+);
+
+-- Permissions
+
+ALTER TABLE korukin_227_reception OWNER TO postgres;
+GRANT ALL ON TABLE korukin_227_reception TO postgres;
+
+
+
+
+-- Permissions
+
+GRANT ALL ON SCHEMA public TO pg_database_owner;
+GRANT USAGE ON SCHEMA public TO public;
+
+INSERT INTO Korukin_227_specialty (id,name_) VALUES
+	 (1,'Отоларинголог'),
+	 (2,'Педиатр'),
+	 (3,'Невролог'),
+	 (4,'Психиатр-нарколог'),
+	 (5,'Уролог'),
+	 (6,'Дерматолог'),
+	 (7,'Логопед'),
+	 (8,'Психиатр'),
+	 (9,'Венеролог'),
+	 (10,'Ветеринар');
+	
+INSERT INTO Korukin_227_doctors (id,first_name,name_,last_name,percentage,id_specialty) VALUES
+	 (1,'Афанасьева','Евгения','Сергеевна',0.50,1),
+	 (2,'Бирюков','Святослав','Егорович',0.50,2),
+	 (3,'Борисов','Мирослав','Арсеньевич',0.50,3),
+	 (4,'Борисов','Лука','Фёдорович',0.50,4),
+	 (5,'Борисова','Алиса','Михайловна',0.50,5),
+	 (6,'Бочаров','Роберт','Янович',0.50,6),
+	 (7,'Васильев','Иван','Фёдорович',0.50,7),
+	 (8,'Васильева','Маргарита','Георгиевна',0.50,8),
+	 (9,'Виноградова','Надежда','Романовна',0.50,9),
+	 (10,'Виноградова','Ангелина','Константиновна',0.50,10);
+	
+INSERT INTO Korukin_227_patient (id,first_name,name_,last_name,birthday,address) VALUES
+	 (1,'Гусев','Роман','Александрович','2006-01-30',''),
+	 (2,'Гусева','Виктория','Фёдоровна','2006-02-19',''),
+	 (3,'Давыдов','Михаил','Германович','2006-03-28',''),
+	 (4,'Давыдов','Николай','Дмитриевич','2006-04-17',''),
+	 (5,'Дегтярев','Максим','Никитич','2006-05-26',''),
+	 (6,'Дмитриев','Максим','Романович','2006-06-15',''),
+	 (7,'Дорофеев','Евгений','Иванович','2006-07-24',''),
+	 (8,'Емельянов','Александр','Матвеевич','2006-08-13',''),
+	 (9,'Ермакова','Дарья','Вячеславовна','2006-09-12',''),
+	 (10,'Ермолаева','Александра','Данииловна','2006-10-01','');
+	
+INSERT INTO Korukin_227_reception (id,id_patient,id_doctors,price,data_) VALUES
+	 (1,1,1,5000,'2024-01-21'),
+	 (2,2,2,5000,'2024-02-22'),
+	 (3,3,3,5000,'2024-03-23'),
+	 (4,4,4,4000,'2024-04-24'),
+	 (5,5,5,6000,'2024-05-25'),
+	 (6,6,6,8000,'2024-06-16'),
+	 (7,7,7,1000,'2024-07-17'),
+	 (8,8,8,9000,'2024-08-18'),
+	 (9,9,9,4000,'2024-09-19'),
+	 (10,10,10,7000,'2024-10-20');
